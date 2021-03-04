@@ -1,51 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
+    <data>
+        <variable
+            name="position"
+            type="Integer" />
+        <variable
+            name="listener"
+            type="com.dz.musicplayer.listeners.MusicListener" />
+        <variable
+            name="model"
+            type="com.dz.musicplayer.models.MusicModel" />
+    </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_margin="5dp"
-        android:background="@drawable/music_shape">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/ic_baseline_music_note_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:onClick="@{() -> listener.onSongSelected(model,position)}"
+            android:background="@drawable/music_shape">
 
-        <TextView
-            android:id="@+id/songName"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
-            android:ellipsize="end"
-            android:gravity="start|center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:maxLines="1"
-            android:text="Song Name"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="parent" />
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.18"
-            app:layout_constraintGuide_begin="20dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_baseline_music_note_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/songName"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:ellipsize="end"
+                android:gravity="start|center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="1"
+                android:text="@{model.songName}"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="parent" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.18"
+                app:layout_constraintGuide_begin="20dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+</layout>

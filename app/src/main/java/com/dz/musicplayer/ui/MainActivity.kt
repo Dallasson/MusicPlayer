@@ -1,11 +1,15 @@
 package com.dz.musicplayer.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.util.ArrayMap
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dz.musicplayer.adapters.MusicAdapter
 import com.dz.musicplayer.databinding.ActivityMainBinding
+import com.dz.musicplayer.databinding.ActivityPlayerBinding
+import com.dz.musicplayer.listeners.MusicListener
 import com.dz.musicplayer.models.MusicModel
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -64,12 +68,23 @@ class MainActivity : AppCompatActivity() {
                 .replace(".wav","")
 
             songs.add(MusicModel(item))
-            musicAdapter = MusicAdapter(songs)
+            musicAdapter = MusicAdapter(songs,object  : MusicListener{
+                override fun onSongSelected(musicModel: MusicModel,position : Int) {
+                  Intent(this@MainActivity,PlayerActivity::class.java).apply {
+                      putExtra("songsList",arrayOfSongs)
+                      putExtra("song",musicModel.songName)
+                      putExtra("position",position)
+                      startActivity(this)
+                  }
+                }
+            })
             binding.musicRecycler.adapter = musicAdapter
+
+
         }
     }
-    private fun songFile(file : File) : MutableList<File>{
-        val songFiles = mutableListOf<File>()
+    private fun songFile(file : File) : ArrayList<File>{
+        val songFiles = arrayListOf<File>()
         val songsList = file.listFiles()
 
         for(singleFile in songsList){
