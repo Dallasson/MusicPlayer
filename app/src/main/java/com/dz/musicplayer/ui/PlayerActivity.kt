@@ -2,11 +2,13 @@ package com.dz.musicplayer.ui
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.graphics.PorterDuff
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import com.dz.musicplayer.R
 import com.dz.musicplayer.databinding.ActivityPlayerBinding
@@ -17,6 +19,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.lang.Exception
+import java.lang.StringBuilder
+import java.util.concurrent.TimeUnit
 
 class PlayerActivity : AppCompatActivity() {
     private var _binding : ActivityPlayerBinding? = null
@@ -64,6 +68,11 @@ class PlayerActivity : AppCompatActivity() {
                 mediaPlayer.start()
                 binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
                 animateImageView(binding.imageView)
+
+                val audioSessionId = mediaPlayer.audioSessionId
+                if(audioSessionId != -1){
+                    binding.blast.setAudioSessionId(audioSessionId)
+                }
             }
             binding.skipBack.setOnClickListener {
                 mediaPlayer.stop()
@@ -74,10 +83,25 @@ class PlayerActivity : AppCompatActivity() {
                 binding.songName.text = listOfSongs[position].name
                 mediaPlayer.start()
                 binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-                animateImageView(binding.imageView)
+                animateImageView2(binding.imageView)
+
+                val audioSessionId = mediaPlayer.audioSessionId
+                if(audioSessionId != -1){
+                    binding.blast.setAudioSessionId(audioSessionId)
+                }
             }
-            binding.fastNext.setOnClickListener {}
-            binding.fastBack.setOnClickListener {}
+            binding.fastNext.setOnClickListener {
+                // TODO : Allow the user to add 15000
+                if(mediaPlayer.isPlaying){
+                    mediaPlayer.seekTo(mediaPlayer.currentPosition + 15000)
+                }
+            }
+            binding.fastBack.setOnClickListener {
+                // TODO : Allow the user to minus 15000
+                if(mediaPlayer.isPlaying){
+                    mediaPlayer.seekTo(mediaPlayer.currentPosition - 150000)
+                }
+            }
 
             mediaPlayer.setOnCompletionListener {
                 binding.playBtn.performClick()
@@ -98,19 +122,80 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
             binding.seekBar.max = mediaPlayer.duration
+            binding.seekBar.progressDrawable.setColorFilter(resources.getColor(R.color.av_orange),PorterDuff.Mode.MULTIPLY)
+            binding.seekBar.thumb.setColorFilter(resources.getColor(R.color.av_green),PorterDuff.Mode.SRC_IN)
+
+
+            // TODO : User Updating music to certain position
+            binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    mediaPlayer.seekTo(seekBar?.progress!!)
+                }
+            })
+            binding.positiveNum.text =   createTime(mediaPlayer.duration)
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(1000)
+                binding.negativeNum.text = createTime(mediaPlayer.currentPosition)
+            }
+
+
+            // TODO : Working on the audio Visualizer
+
+            val audioSessionId = mediaPlayer.audioSessionId
+            if(audioSessionId != -1){
+                binding.blast.setAudioSessionId(audioSessionId)
+            }
+
 
         }
-
     }
+
+    private fun createTime(duration : Int) : String {
+        // TODO : Creating Time
+        var time = ""
+        val min = duration / 1000 / 60
+        val sec = duration / 1000 % 60
+
+        time+= "$min:"
+
+        if(sec < 10){
+            time+="0"
+        }
+
+        time+=sec
+        return time
+    }
+
     private fun animateImageView(view : View){
         val objectAnimator = ObjectAnimator.ofFloat(view,"rotation",360f)
         objectAnimator.duration = 1000
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(objectAnimator)
+        animatorSet.start()
+    }
+
+    private fun animateImageView2(view : View){
+        val objectAnimator = ObjectAnimator.ofFloat(view,"rotation",360f)
+        objectAnimator.duration = 1000
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(objectAnimator)
+        animatorSet.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        binding.blast.release()
+        if(mediaPlayer.isPlaying){
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
         _binding = null
     }
 }
