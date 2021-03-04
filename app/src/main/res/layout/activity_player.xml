@@ -23,13 +23,12 @@
         android:layout_marginTop="100dp"/>
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginStart="105dp"
         android:layout_marginTop="50dp"
         android:src="@drawable/ic_musicicon"/>
-
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
