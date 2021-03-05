@@ -106,6 +106,22 @@ class PlayerActivity : AppCompatActivity() {
 
             mediaPlayer.setOnCompletionListener {
                 binding.playBtn.performClick()
+                mediaPlayer.stop()
+                mediaPlayer.release()
+                // if(!mediaPlayer.isLooping){
+                     position = ((position - 1) %listOfSongs.size)
+                     val uri = Uri.parse(listOfSongs[position].toString())
+                     mediaPlayer = MediaPlayer.create(applicationContext,uri)
+                     mediaPlayer.start()
+                     binding.songName.text = listOfSongs[position].name
+                     binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                     animateImageViewForward(binding.imageView)
+
+                     val audioSessionId = mediaPlayer.audioSessionId
+                     if(audioSessionId != -1){
+                         mediaPlayer.audioSessionId = audioSessionId
+                  //   }
+                 }
             }
 
             // TODO : Calculating Music Time
@@ -173,7 +189,13 @@ class PlayerActivity : AppCompatActivity() {
 
             // TODO : Shuffle Audio
             binding.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-
+                if(buttonView.isPressed){
+                    if(isChecked){
+                        mediaPlayer.isLooping = isChecked
+                    } else {
+                        mediaPlayer.isLooping = isChecked
+                    }
+                }
 
             }
 
