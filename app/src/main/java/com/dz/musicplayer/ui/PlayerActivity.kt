@@ -10,6 +10,8 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.bullhead.equalizer.DialogEqualizerFragment
 import com.dz.musicplayer.R
 import com.dz.musicplayer.databinding.ActivityPlayerBinding
 import kotlinx.coroutines.CoroutineScope
@@ -35,15 +37,14 @@ class PlayerActivity : AppCompatActivity() {
 
         listOfSongs = arrayListOf()
 
-
-
         val intent = intent
         intent?.let {
             listOfSongs  = (it.getSerializableExtra("songsList") as ArrayList<File>?)!!
 
-            var songName = intent.getStringExtra("song")
+            val songName = intent.getStringExtra("song")
             var position = intent.getIntExtra("position", 0)
             val uri = Uri.parse(listOfSongs[position].toString())
+            binding.songName.isSelected = true
             binding.songName.text = songName
 
             // TODO : Creating MediaPlayer
@@ -52,10 +53,10 @@ class PlayerActivity : AppCompatActivity() {
             binding.playBtn.setOnClickListener {
                 if(mediaPlayer.isPlaying){
                     mediaPlayer.pause()
-                    binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                    binding.playBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
                 } else {
                     mediaPlayer.start()
-                    binding.playBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+                    binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
                 }
             }
             binding.skipNext.setOnClickListener {
@@ -67,7 +68,7 @@ class PlayerActivity : AppCompatActivity() {
                 binding.songName.text = listOfSongs[position].name
                 mediaPlayer.start()
                 binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-                animateImageView(binding.imageView)
+                animateImageViewForward(binding.imageView)
 
                 val audioSessionId = mediaPlayer.audioSessionId
                 if(audioSessionId != -1){
@@ -83,7 +84,7 @@ class PlayerActivity : AppCompatActivity() {
                 binding.songName.text = listOfSongs[position].name
                 mediaPlayer.start()
                 binding.playBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-                animateImageView2(binding.imageView)
+                animateImageViewBackWords(binding.imageView)
 
                 val audioSessionId = mediaPlayer.audioSessionId
                 if(audioSessionId != -1){
@@ -154,6 +155,28 @@ class PlayerActivity : AppCompatActivity() {
             }
 
 
+            // TODO : Audio Equalizer
+            binding.equalizer.setOnClickListener {
+                val dialogEqualizer = DialogEqualizerFragment.newBuilder()
+                    .setAudioSessionId(audioSessionId)
+                    .themeColor(ContextCompat.getColor(this, R.color.black))
+                    .textColor(ContextCompat.getColor(this, R.color.white))
+                    .accentAlpha(ContextCompat.getColor(this, R.color.av_red))
+                    .darkColor(ContextCompat.getColor(this, R.color.av_green))
+                    .setAccentColor(ContextCompat.getColor(this, R.color.black))
+                    .build()
+
+                if(mediaPlayer.isPlaying){
+                    dialogEqualizer.show(supportFragmentManager,"eq")
+                }
+            }
+
+            // TODO : Shuffle Audio
+            binding.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+
+
+            }
+
         }
     }
 
@@ -173,21 +196,22 @@ class PlayerActivity : AppCompatActivity() {
         return time
     }
 
-    private fun animateImageView(view : View){
-        val objectAnimator = ObjectAnimator.ofFloat(view,"rotation",360f)
+    private fun animateImageViewForward(view : View){
+        val objectAnimator = ObjectAnimator.ofFloat(view,"rotationY",0f,360f)
         objectAnimator.duration = 1000
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(objectAnimator)
         animatorSet.start()
     }
 
-    private fun animateImageView2(view : View){
-        val objectAnimator = ObjectAnimator.ofFloat(view,"rotation",360f)
+    private fun animateImageViewBackWords(view : View){
+        val objectAnimator = ObjectAnimator.ofFloat(view,"rotationX",0f,360f)
         objectAnimator.duration = 1000
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(objectAnimator)
         animatorSet.start()
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

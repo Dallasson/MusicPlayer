@@ -15,14 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/black"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="5dp"
-            android:onClick="@{() -> listener.onSongSelected(model,position)}"
-            android:background="@drawable/music_shape">
+            android:onClick="@{() -> listener.onSongSelected(model,position)}">
 
             <ImageView
                 android:layout_width="35dp"
@@ -40,14 +40,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="16dp"
-                android:ellipsize="end"
                 android:gravity="start|center"
                 android:marqueeRepeatLimit="marquee_forever"
-                android:maxLines="1"
                 android:text="@{model.songName}"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:maxLines="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"

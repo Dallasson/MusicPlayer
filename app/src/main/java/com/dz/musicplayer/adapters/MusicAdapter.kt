@@ -30,8 +30,10 @@ class MusicAdapter(var musicList : MutableList<MusicModel>,
     override fun onBindViewHolder(holder: MusicHolder, position: Int) {
        val data = musicList[position]
         holder.musicRowsLayoutBinding.model = data
+        holder.musicRowsLayoutBinding.songName.isSelected = true
         holder.musicRowsLayoutBinding.position = position
         holder.musicRowsLayoutBinding.listener = listener
+
     }
 
     override fun getItemCount(): Int {
