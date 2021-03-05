@@ -8,7 +8,7 @@
             type="com.dz.musicplayer.listeners.MusicListener" />
         <variable
             name="model"
-            type="com.dz.musicplayer.models.MusicModel" />
+            type="com.dz.musicplayer.models.SongModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

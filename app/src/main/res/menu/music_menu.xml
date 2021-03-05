@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/songs"
+        android:icon="@drawable/ic_baseline_music_note_24"
+        android:title=""/>
+
+    <item android:id="@+id/library"
+        android:icon="@drawable/ic_baseline_library_music_24"
+        android:title=""/>
+
+    <item android:id="@+id/folder"
+        android:icon="@drawable/ic_baseline_folder_24"
+        android:title=""/>
+
+</menu>

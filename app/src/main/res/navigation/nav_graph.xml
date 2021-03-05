@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/songsFragment">
+
+    <fragment
+        android:id="@+id/songsFragment"
+        android:name="com.dz.musicplayer.fragments.SongsFragment"
+        android:label="SongsFragment" />
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.dz.musicplayer.fragments.LibraryFragment"
+        android:label="LibraryFragment" />
+    <fragment
+        android:id="@+id/foldersFragment"
+        android:name="com.dz.musicplayer.fragments.FoldersFragment"
+        android:label="FoldersFragment" />
+</navigation>

@@ -1,47 +1,44 @@
 package com.dz.musicplayer.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.util.ArrayMap
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.dz.musicplayer.adapters.MusicAdapter
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.dz.musicplayer.R
 import com.dz.musicplayer.databinding.ActivityMainBinding
 import com.dz.musicplayer.databinding.ActivityPlayerBinding
-import com.dz.musicplayer.listeners.MusicListener
-import com.dz.musicplayer.models.MusicModel
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
-import java.io.File
-import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var songs : MutableList<MusicModel>
-    private lateinit var musicAdapter: MusicAdapter
     private var _binding : ActivityMainBinding? = null
     private val binding  get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.title = "Songs"
 
-        songs = mutableListOf()
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
 
+        binding.bottomNav.setupWithNavController(navController)
+
+        val appBarConfiguration = AppBarConfiguration(navGraph = navController.graph)
+        setupActionBarWithNavController(navController,appBarConfiguration)
 
         Dexter.withContext(this)
             .withPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.RECORD_AUDIO)
             .withListener(object : MultiplePermissionsListener{
                 override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
-                    displaySongs()
-                    initAdapter()
+
                 }
 
                 override fun onPermissionRationaleShouldBeShown(p0: MutableList<PermissionRequest>?, p1: PermissionToken?) {
@@ -51,55 +48,29 @@ class MainActivity : AppCompatActivity() {
 
             }).check()
 
-        initAdapter()
-    }
 
-
-    private fun initAdapter(){
-        binding.musicRecycler.layoutManager = LinearLayoutManager(this)
-        binding.musicRecycler.setHasFixedSize(true)
-
-    }
-
-    private fun displaySongs(){
-        val arrayOfSongs = songFile(Environment.getExternalStorageDirectory())
-
-        for(i in arrayOfSongs.indices){
-            val item = arrayOfSongs[i].name.replace(".mp3","")
-                .replace(".wav","")
-
-            songs.add(MusicModel(item))
-            musicAdapter = MusicAdapter(songs,object  : MusicListener{
-                override fun onSongSelected(musicModel: MusicModel,position : Int) {
-                  Intent(this@MainActivity,PlayerActivity::class.java).apply {
-                      putExtra("songsList",arrayOfSongs)
-                      putExtra("song",musicModel.songName)
-                      putExtra("position",position)
-                      startActivity(this)
-                  }
+        binding.bottomNav.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.songs -> {
+                    navController.navigate(R.id.songsFragment)
+                    binding.toolbar.title = "Songs"
                 }
-            })
-            binding.musicRecycler.adapter = musicAdapter
-
-
-        }
-    }
-    private fun songFile(file : File) : ArrayList<File>{
-        val songFiles = arrayListOf<File>()
-        val songsList = file.listFiles()
-
-        for(singleFile in songsList){
-            if(singleFile.isDirectory && !singleFile.isHidden){
-                songFiles.addAll(songFile(singleFile))
-            } else {
-                if(singleFile.name.endsWith(".mp3") || singleFile.name.endsWith(".wav")){
-                    songFiles.add(singleFile)
+                R.id.library -> {
+                    navController.navigate(R.id.libraryFragment)
+                    binding.toolbar.title = "Library"
                 }
-
+                R.id.folder -> {
+                    navController.navigate(R.id.foldersFragment)
+                    binding.toolbar.title = "Audio Folders"
+                }
             }
+
+            true
         }
-        return songFiles
     }
+
+
+
 
     override fun onDestroy() {
         super.onDestroy()

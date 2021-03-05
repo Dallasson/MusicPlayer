@@ -1,27 +1,24 @@
 package com.dz.musicplayer.adapters
 
-import android.service.autofill.TextValueSanitizer
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dz.musicplayer.R
-import com.dz.musicplayer.databinding.MusicRowsLayoutBinding
+import com.dz.musicplayer.databinding.SongsRowsLayoutBinding
 import com.dz.musicplayer.listeners.MusicListener
-import com.dz.musicplayer.models.MusicModel
+import com.dz.musicplayer.models.SongModel
 
-class MusicAdapter(var musicList : MutableList<MusicModel>,
-       var listener : MusicListener) : RecyclerView.Adapter<MusicAdapter.MusicHolder>() {
+class SongsAdapter(var musicList : MutableList<SongModel>,
+                   var listener : MusicListener) : RecyclerView.Adapter<SongsAdapter.MusicHolder>() {
 
-    class MusicHolder(var musicRowsLayoutBinding: MusicRowsLayoutBinding) :
+    class MusicHolder(var musicRowsLayoutBinding: SongsRowsLayoutBinding) :
         RecyclerView.ViewHolder(musicRowsLayoutBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicHolder {
-        val view = DataBindingUtil.inflate<MusicRowsLayoutBinding>(
+        val view = DataBindingUtil.inflate<SongsRowsLayoutBinding>(
             LayoutInflater.from(parent.context),
-            R.layout.music_rows_layout,
+            R.layout.songs_rows_layout,
             parent,false
         )
         return MusicHolder(view)

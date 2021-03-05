@@ -4,6 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.io.Serializable
 
-data class MusicModel (
+data class SongModel (
     var songName : String
 ) : Serializable
